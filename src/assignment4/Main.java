@@ -1,9 +1,9 @@
 /* CRITTERS Main.java
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
+ * Shashank Kambhampati
+ * skk834
+ * 16445
  * <Student2 Name>
  * <Student2 EID>
  * <Student2 5-digit Unique No.>
@@ -22,6 +22,7 @@ import java.io.*;
  */
 public class Main {
 
+	private static final String PROMPT = "critters>";
     static Scanner kb;	// scanner connected to keyboard input, or input file
     private static String inputFile;	// input file, used instead of keyboard input if specified
     static ByteArrayOutputStream testOutputString;	// if test specified, holds all console output
@@ -68,11 +69,121 @@ public class Main {
 
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
-        
-        System.out.println("GLHF");
+
+		boolean done = false;
+		
+		while(!done){
+			System.out.print(PROMPT);
+
+
+			String in = kb.nextLine();
+			String[] inputArgs = in.split("\\s");
+			boolean invalid = false;
+
+			switch(inputArgs[0]){
+			    case "quit":
+					if(inputArgs.length == 1){
+						done = true;
+					} else {
+						invalid = true;
+					}
+					break;
+
+				case "show":
+					if(inputArgs.length == 1){
+						Critter.displayWorld();
+					} else {
+						invalid = true;
+					}
+					break;
+
+			    case "step":
+					int numSteps = 0;
+					if(inputArgs.length == 1){
+						numSteps = 1;
+
+					} else if(inputArgs.length == 2){
+						try{
+							int numSteps = Integer.parseInt(inputArgs[1]);
+						} catch(NumberFormatException e){
+							invalid = true;
+						}
+
+					} else {
+						invalid = true;
+					}
+
+					if(!invalid){
+						for(int i =0; i < numSteps; i++){
+							Critter.worldTimeStep();
+						}
+					}
+					break;
+
+			    case "seed":
+					if(inputArgs.length == 2){
+						try{
+							int seed = Integer.parseInt(inputArgs[1]);
+							Critter.setSeed(seed);
+						} catch(NumberFormatException e){
+							invalid = true;
+						}
+					} else {
+						invalid = true;
+					}
+					break;
+					
+			    case "make":
+					int numToMake = 0;
+					if(inputArgs.length == 3){
+						try{
+							numToMake = Integer.parseInt(inputArgs[2]);
+						} catch(NumberFormatException e){
+							invalid = true;
+						}
+					} else if(inputArgs.length == 2){
+						numToMake = 1;
+					} else {
+						invalid = true;
+					}
+
+					if(!invalid){
+						try{
+							for(int i = 0; i < numToMake; i++){
+								Critter.makeCritter(inputArgs[1]);
+							}
+						} catch(InvalidCritterException e){
+							invalid = true;
+						}
+					}
+					break;
+
+			    case "stats":
+					if(inputArgs.length == 2){
+						try{
+							java.util.List<Critter> statList = Critter.getInstances(inputArgs[1]);
+							statList.get(0).runStats(statList);
+						} catch(InvalidCritterException e){
+							invalid = true;
+						}
+					} else {
+						invalid = true;
+					}
+					break;
+			    
+			    default:
+					invalid = true;
+			}
+
+
+			if(invalid){
+				System.err.println("error processing: " + in);
+			}
+		}
         
         /* Write your code above */
         System.out.flush();
 
     }
+
 }
