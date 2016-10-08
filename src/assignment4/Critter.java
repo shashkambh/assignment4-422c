@@ -4,9 +4,9 @@
  * Shashank Kambhampati
  * skk834
  * 16445
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * Pranav Harathi
+ * sh44674
+ * 16460
  * Slip days used: <0>
  * Fall 2016
  */
@@ -86,7 +86,7 @@ public abstract class Critter {
 	}
 
 	public abstract void doTimeStep();
-	public abstract boolean fight(String oponent);
+	public abstract boolean fight(String opponent);
 	
 	/**
 	 * create and initialize a Critter subclass.
@@ -109,7 +109,11 @@ public abstract class Critter {
 		}
 
 		if(!Modifier.isAbstract(toMake.getModifiers())){
-			toMakeInstance = toMake.newInstance();
+			try{
+				toMakeInstance = toMake.newInstance();
+			} catch(Exception e){
+				throw new InvalidCritterException(critter_class_name);
+			}
 			toMakeInstance.energy = Params.start_energy;
 			toMakeInstance.x_coord = getRandomInt(Params.world_width);
 			toMakeInstance.y_coord = getRandomInt(Params.world_height);
@@ -246,5 +250,33 @@ public abstract class Critter {
 		}
 	}
 	
-	public static void displayWorld() {}
+	public static void displayWorld() {
+		String[][] grid = new String[Params.world_height][Params.world_width];
+		for(Critter c : population) {
+			grid[c.x_coord][c.y_coord] = c.toString();
+		}
+		// print grid
+		for(int r = 0; r < grid.length + 2; r++) {
+			for(int c = 0; c < grid[r].length + 2; c++) {
+
+				if(c == 0) {
+					if(r == 0 || r == grid.length + 1) System.out.print("+");
+					else System.out.print("|");
+					continue;
+				} else if(c == grid.length + 1) {
+					if(r == 0 || r == grid.length + 1) System.out.print("+");
+					else System.out.print("|");
+					continue;
+				}
+
+				if(r == 0 || r == grid.length + 1) {
+					System.out.print("-");
+					continue;
+				}
+
+				System.out.print(grid[r][c]);
+			}
+		}
+		System.gc(); // just in case
+	}
 }
