@@ -1,9 +1,9 @@
 /* CRITTERS Critter.java
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
+ * Shashank Kambhampati
+ * skk834
+ * 16445
  * <Student2 Name>
  * <Student2 EID>
  * <Student2 5-digit Unique No.>
@@ -13,6 +13,7 @@
 package assignment4;
 
 import java.util.List;
+import java.lang.reflect.Modifier;
 
 /* see the PDF for descriptions of the methods and fields in this class
  * you may add fields, methods or inner classes to Critter ONLY if you make your additions private
@@ -50,10 +51,35 @@ public abstract class Critter {
 	private int y_coord;
 	
 	protected final void walk(int direction) {
+		go(direction, 1);
 	}
 	
 	protected final void run(int direction) {
-		
+		go(direction, 2);
+	}
+
+	private void go(int direction, int distance){
+		if(direction > 4){
+			y_coord += distance;
+
+			y_coord = y_coord >= Params.world_height ? y_coord - Params.world_height : y_coord;
+			
+		} else if(direction > 0 && direction < 4){
+			y_coord -= distance;
+
+			y_coord = y_coord < 0 ? y_coord + Params.world_height : y_coord;
+		}
+
+		if(direction > 2 && direction < 6){
+			x_coord -= distance;
+
+			x_coord = x_coord >= Params.world_width ? x_coord - Params.world_width : x_coord;
+		} else if(direction < 2 || direction > 6){
+			x_coord += distance;
+
+			x_coord = x_coord < 0 ? x_coord + Params.world_width : x_coord;
+		}
+
 	}
 	
 	protected final void reproduce(Critter offspring, int direction) {
@@ -73,6 +99,25 @@ public abstract class Critter {
 	 * @throws InvalidCritterException
 	 */
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
+		Class<? extends Critter> toMake;
+		Critter toMakeInstance;
+		
+		try{
+			toMake = Class.forName(critter_class_name).asSubclass(Critter.class);
+		} catch(Throwable e){
+			throw new InvalidCritterException(critter_class_name);
+		}
+
+		if(!Modifier.isAbstract(toMake.getModifiers())){
+			toMakeInstance = toMake.newInstance();
+			toMakeInstance.energy = Params.start_energy;
+			toMakeInstance.x_coord = getRandomInt(Params.world_width);
+			toMakeInstance.y_coord = getRandomInt(Params.world_height);
+
+			babies.add(toMakeInstance);
+		} else {
+			throw new InvalidCritterException(critter_class_name);
+		}
 	}
 	
 	/**
@@ -83,7 +128,21 @@ public abstract class Critter {
 	 */
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		List<Critter> result = new java.util.ArrayList<Critter>();
-	
+
+		Class<? extends Critter> search;
+		
+		try{
+			search = Class.forName(critter_class_name).asSubclass(Critter.class);
+		} catch(Throwable e){
+			throw new InvalidCritterException(critter_class_name);
+		}
+
+		for(Critter e : population){
+			if(search.isInstance(e)){
+				result.add(e);
+			}
+		}
+		
 		return result;
 	}
 	
@@ -167,9 +226,24 @@ public abstract class Critter {
 	 * Clear the world of all critters, dead and alive
 	 */
 	public static void clearWorld() {
+		population.clear();
+		babies.clear();
 	}
 	
 	public static void worldTimeStep() {
+		for(Critter toStep : population){
+			toStep.doTimeStep();
+		}
+
+		// TODO conflict resolution, add new Critters
+
+		for(int i = population.size() - 1; i >= 0; i--){
+			Critter toCheck = population.get(i);
+			toCheck.energy -= Params.rest_energy_cost;
+			if(toCheck.energy <= 0){
+				population.remove(i);
+			}
+		}
 	}
 	
 	public static void displayWorld() {}
