@@ -172,12 +172,12 @@ public class Main {
 					break;
 			    
 			    default:
-					invalid = true;
+					System.out.println("invalid command: " + in)
 			}
 
 
 			if(invalid){
-				System.err.println("error processing: " + in);
+				System.out.println("error processing: " + in);
 			}
 		}
         

@@ -118,7 +118,7 @@ public abstract class Critter {
 			toMakeInstance.x_coord = getRandomInt(Params.world_width);
 			toMakeInstance.y_coord = getRandomInt(Params.world_height);
 
-			babies.add(toMakeInstance);
+			population.add(toMakeInstance);
 		} else {
 			throw new InvalidCritterException(critter_class_name);
 		}
@@ -235,12 +235,18 @@ public abstract class Critter {
 	}
 	
 	public static void worldTimeStep() {
+		// TODO conflict resolution, add new Critters
+		/* Order of timeStep:
+		   doTimeSteps for all Critters
+		   Do fights for any conflicts
+		   updateRestEnergy for all Critters
+		   generate algae
+		   move babies to general population
+		 */
 		for(Critter toStep : population){
 			toStep.doTimeStep();
 		}
-
-		// TODO conflict resolution, add new Critters
-
+		
 		for(int i = population.size() - 1; i >= 0; i--){
 			Critter toCheck = population.get(i);
 			toCheck.energy -= Params.rest_energy_cost;
