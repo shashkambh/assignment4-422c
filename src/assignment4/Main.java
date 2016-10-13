@@ -104,7 +104,7 @@ public class Main {
 
 					} else if(inputArgs.length == 2){
 						try{
-							int numSteps = Integer.parseInt(inputArgs[1]);
+							numSteps = Integer.parseInt(inputArgs[1]);
 						} catch(NumberFormatException e){
 							invalid = true;
 						}
@@ -172,7 +172,7 @@ public class Main {
 					break;
 			    
 			    default:
-					System.out.println("invalid command: " + in)
+					System.out.println("invalid command: " + in);
 			}
 
 

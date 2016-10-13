@@ -12,6 +12,9 @@
  */
 package assignment4;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.lang.reflect.Modifier;
 
@@ -103,7 +106,7 @@ public abstract class Critter {
 		Critter toMakeInstance;
 		
 		try{
-			toMake = Class.forName(critter_class_name).asSubclass(Critter.class);
+			toMake = Class.forName(myPackage + "." + critter_class_name).asSubclass(Critter.class);
 		} catch(Throwable e){
 			throw new InvalidCritterException(critter_class_name);
 		}
@@ -114,6 +117,7 @@ public abstract class Critter {
 			} catch(Exception e){
 				throw new InvalidCritterException(critter_class_name);
 			}
+			
 			toMakeInstance.energy = Params.start_energy;
 			toMakeInstance.x_coord = getRandomInt(Params.world_width);
 			toMakeInstance.y_coord = getRandomInt(Params.world_height);
@@ -136,7 +140,7 @@ public abstract class Critter {
 		Class<? extends Critter> search;
 		
 		try{
-			search = Class.forName(critter_class_name).asSubclass(Critter.class);
+			search = Class.forName(myPackage + "." + critter_class_name).asSubclass(Critter.class);
 		} catch(Throwable e){
 			throw new InvalidCritterException(critter_class_name);
 		}
@@ -247,6 +251,9 @@ public abstract class Critter {
 			toStep.doTimeStep();
 		}
 		
+		ArrayList<List<Critter>> conflicts = identifyConflicts();
+		resolveConflicts(conflicts);
+		
 		for(int i = population.size() - 1; i >= 0; i--){
 			Critter toCheck = population.get(i);
 			toCheck.energy -= Params.rest_energy_cost;
@@ -255,33 +262,73 @@ public abstract class Critter {
 			}
 		}
 	}
+
+	private static void resolveConflicts(ArrayList<List<Critter>> conflicts) {
+		for(List<Critter> conflict : conflicts) {
+			Critter critterA = conflict.get(0);
+			Critter critterB = conflict.get(1);
+			boolean Afight = critterA.fight(critterB.toString());
+			boolean Bfight = critterB.fight(critterA.toString());
+			int AfightNum = Afight ? getRandomInt(critterA.energy) : 0;
+			int BfightNum = Bfight ? getRandomInt(critterB.energy) : 0;
+			Critter winner = AfightNum > BfightNum ? critterA : critterB;
+			Critter loser = winner == critterA ? critterB : critterA;
+			winner.energy += loser.energy / 2;
+			population.remove(loser);
+		}
+	}
+
+	private static ArrayList<List<Critter>> identifyConflicts() {
+		HashMap<String, Critter> occupied = new HashMap<>();
+		ArrayList<List<Critter>> conflicts = new ArrayList<>();
+		for(Critter c : population) {
+			String coords = String.format("%d %d", c.x_coord, c.y_coord);
+			if(occupied.containsKey(coords)) {
+				ArrayList<Critter> conflictPair = new ArrayList<>();
+				conflictPair.add(c);
+				conflictPair.add(occupied.get(coords));
+				conflicts.add(conflictPair);
+			} else {
+				occupied.put(coords, c);
+			}
+		}
+		return conflicts;
+	}
 	
 	public static void displayWorld() {
 		String[][] grid = new String[Params.world_height][Params.world_width];
+		
 		for(Critter c : population) {
-			grid[c.x_coord][c.y_coord] = c.toString();
+			grid[c.y_coord][c.x_coord] = c.toString();
 		}
 		// print grid
 		for(int r = 0; r < grid.length + 2; r++) {
-			for(int c = 0; c < grid[r].length + 2; c++) {
-
+			for(int c = 0; c < grid[0].length + 2; c++) {
+				
 				if(c == 0) {
 					if(r == 0 || r == grid.length + 1) System.out.print("+");
 					else System.out.print("|");
 					continue;
-				} else if(c == grid.length + 1) {
+				} else if(c == grid[0].length + 1) {
 					if(r == 0 || r == grid.length + 1) System.out.print("+");
 					else System.out.print("|");
 					continue;
+				} else {
+					if(r == 0 || r == grid.length + 1) {
+						System.out.print("-");
+						continue;
+					} else {
+						if(grid[r - 1][c - 1] == null) {
+							System.out.print(" ");
+						} else {
+							System.out.print(grid[r - 1][c - 1]);
+						}
+					}
 				}
 
-				if(r == 0 || r == grid.length + 1) {
-					System.out.print("-");
-					continue;
-				}
-
-				System.out.print(grid[r][c]);
+				
 			}
+			System.out.println();
 		}
 		System.gc(); // just in case
 	}
