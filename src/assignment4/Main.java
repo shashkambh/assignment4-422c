@@ -11,7 +11,7 @@
  * Fall 2016
  */
 package assignment4; // cannot be in default package
-import java.util.Scanner;
+import java.util.*;
 import java.io.*;
 
 
@@ -162,8 +162,11 @@ public class Main {
                     if(inputArgs.length == 2){
                         try{
                             java.util.List<Critter> statList = Critter.getInstances(inputArgs[1]);
-                            statList.get(0).runStats(statList);
-                        } catch(InvalidCritterException e){
+							
+							Class<?>[] params = {List.class};
+							
+                            statList.get(0).getClass().getMethod("runStats", params).invoke(null, statList);
+                        } catch(Exception e){
                             invalid = true;
                         }
                     } else {

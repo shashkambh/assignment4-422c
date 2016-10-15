@@ -31,6 +31,8 @@ public abstract class Critter {
         myPackage = Critter.class.getPackage().toString().split(" ")[1];
     }
     
+    private static boolean fighting = false;
+    
     private static java.util.Random rand = new java.util.Random();
 	/**
 	 * Generates a random integer from 0 to max - 1 based on rand.
@@ -59,7 +61,7 @@ public abstract class Critter {
     private int x_coord;
     private int y_coord;
     
-    boolean walked;
+    private boolean walked;
     protected final void walk(int direction) {
         if(!walked){
             walked = true;
@@ -79,7 +81,10 @@ public abstract class Critter {
     }
 
     private void go(int direction, int distance){
-        if(direction > 4){
+        int oldy = y_coord;
+        int oldx = x_coord;
+    	
+    	if(direction > 4){
             y_coord += distance;
 
             y_coord = y_coord >= Params.world_height ? y_coord - Params.world_height : y_coord;
@@ -99,12 +104,26 @@ public abstract class Critter {
 
             x_coord = x_coord < 0 ? x_coord + Params.world_width : x_coord;
         }
+        
+        if(fighting && isTaken(x_coord, y_coord)){
+        	x_coord = oldx;
+        	y_coord = oldy;
+        }
 
+    }
+    
+    private static boolean isTaken(int x, int y){
+    	for(Critter e : population){
+    		if(e.x_coord == x && e.y_coord == y){
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
 	/**
 	 * Takes a new instance of Critter and adds it to the list of babies if possible.
-	 * IF the parent has enough energy, the offspring is assigned some of its energy and a location.
+	 * If the parent has enough energy, the offspring is assigned some of its energy and a location.
 	 * @param offspring The new instance of Critter to be added
 	 * @param direction The direction in which this offspring will be placed
 	 */
@@ -284,9 +303,11 @@ public abstract class Critter {
             toStep.doTimeStep();
         }
         
+        fighting = true;
         ArrayList<List<Critter>> conflicts = identifyConflicts();
         resolveConflicts(conflicts);
-
+        fighting = false;
+        
         for(int i = population.size() - 1; i >= 0; i--){
             Critter toCheck = population.get(i);
             toCheck.energy -= Params.rest_energy_cost;
@@ -296,7 +317,9 @@ public abstract class Critter {
         }
 
         for(int i = 0; i < Params.refresh_algae_count; i++){
-            makeCritter("Algae");
+			try{
+				makeCritter("Algae");
+			} catch(InvalidCritterException e){System.out.println("Something went very wrong.");}
         }
 
 		population.addAll(babies);
@@ -307,17 +330,39 @@ public abstract class Critter {
         for(List<Critter> conflict : conflicts) {
             Critter critterA = conflict.get(0);
             Critter critterB = conflict.get(1);
-            boolean Afight = critterA.fight(critterB.toString());
-            boolean Bfight = critterB.fight(critterA.toString());
-            int AfightNum = Afight ? getRandomInt(critterA.energy) : 0;
-            int BfightNum = Bfight ? getRandomInt(critterB.energy) : 0;
-            Critter winner = AfightNum > BfightNum ? critterA : critterB;
-            Critter loser = winner == critterA ? critterB : critterA;
-            winner.energy += loser.energy / 2;
-            population.remove(loser);
+
+			if(population.contains(critterA) && population.contains(critterB)){
+				
+				boolean Afight = critterA.fight(critterB.toString());
+				boolean Bfight = critterB.fight(critterA.toString());
+
+				if(critterA.energy <= 0){
+					population.remove(critterA);
+					critterA.x_coord = -1;
+					critterA.y_coord = -1;
+				} 
+				if(critterB.energy <= 0){
+					population.remove(critterB);
+					critterB.x_coord = -2;
+					critterB.y_coord = -2;
+				}
+				
+				if(critterA.x_coord == critterB.x_coord && critterA.y_coord == critterB.y_coord){
+
+					int AfightNum = Afight ? getRandomInt(critterA.energy) : 0;
+					int BfightNum = Bfight ? getRandomInt(critterB.energy) : 0;
+					Critter winner = AfightNum > BfightNum ? critterA : critterB;
+					Critter loser = winner == critterA ? critterB : critterA;
+					winner.energy += loser.energy / 2;
+					population.remove(loser);
+				}
+			}
         }
     }
 
+	/**
+	 * Creates a list of all Critters occupying the same space
+	 */
     private static ArrayList<List<Critter>> identifyConflicts() {
         HashMap<String, Critter> occupied = new HashMap<>();
         ArrayList<List<Critter>> conflicts = new ArrayList<>();
