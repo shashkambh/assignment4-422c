@@ -1,13 +1,12 @@
 /* CRITTERS Critter.java
  * EE422C Project 4 submission by
- * Replace <...> with your actual data.
  * Shashank Kambhampati
  * skk834
  * 16445
  * Pranav Harathi
  * sh44674
  * 16460
- * Slip days used: <0>
+ * Slip days used: 0
  * Fall 2016
  */
 package assignment4;
@@ -18,12 +17,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.lang.reflect.Modifier;
 
-/* see the PDF for descriptions of the methods and fields in this class
- * you may add fields, methods or inner classes to Critter ONLY if you make your additions private
- * no new public, protected or default-package code or data can be added to Critter
+/**
+ * Abstract class that all objects in the Critter world extend. Also manages the 
+ * Critter world.
  */
-
-
 public abstract class Critter {
     private static String myPackage;
     private static List<Critter> population = new java.util.ArrayList<Critter>();
@@ -35,10 +32,19 @@ public abstract class Critter {
     }
     
     private static java.util.Random rand = new java.util.Random();
+	/**
+	 * Generates a random integer from 0 to max - 1 based on rand.
+	 * @param max One more than the maximum number possible from this function
+	 * @return An int from 0 to max - 1
+	 */
     public static int getRandomInt(int max) {
         return rand.nextInt(max);
     }
-    
+
+	/**
+	 * Sets the seed for the random number generator used in getRandomInt.
+	 * @param new_seed The number the seed will be set to
+	 */
     public static void setSeed(long new_seed) {
         rand = new java.util.Random(new_seed);
     }
@@ -69,7 +75,7 @@ public abstract class Critter {
             go(direction, 2);
         }
 
-        energy -= Params.un_energy_cost;
+        energy -= Params.run_energy_cost;
     }
 
     private void go(int direction, int distance){
@@ -95,7 +101,13 @@ public abstract class Critter {
         }
 
     }
-    
+
+	/**
+	 * Takes a new instance of Critter and adds it to the list of babies if possible.
+	 * IF the parent has enough energy, the offspring is assigned some of its energy and a location.
+	 * @param offspring The new instance of Critter to be added
+	 * @param direction The direction in which this offspring will be placed
+	 */
     protected final void reproduce(Critter offspring, int direction) {
         if(this.energy >= Params.min_reproduce_energy){
             offspring.energy = this.energy / 2;
@@ -257,8 +269,10 @@ public abstract class Critter {
         babies.clear();
     }
     
+	/**
+	 * Moves the world and all Critters in it forward by a timestep.
+	 */
     public static void worldTimeStep() {
-        // TODO conflict resolution, add new Critters
         /* Order of timeStep:
            doTimeSteps for all Critters
            Do fights for any conflicts
@@ -273,14 +287,6 @@ public abstract class Critter {
         ArrayList<List<Critter>> conflicts = identifyConflicts();
         resolveConflicts(conflicts);
 
-        for(Critter resting : population){
-            resting.energy -= Params.rust_energy_cost;
-        }
-
-        for(int i = 0; i < Params.refresh_algae_count; i++){
-            makeCritter("Algae");
-        }
-        
         for(int i = population.size() - 1; i >= 0; i--){
             Critter toCheck = population.get(i);
             toCheck.energy -= Params.rest_energy_cost;
@@ -288,6 +294,13 @@ public abstract class Critter {
                 population.remove(i);
             }
         }
+
+        for(int i = 0; i < Params.refresh_algae_count; i++){
+            makeCritter("Algae");
+        }
+
+		population.addAll(babies);
+		babies.clear();
     }
 
     private static void resolveConflicts(ArrayList<List<Critter>> conflicts) {
@@ -322,6 +335,9 @@ public abstract class Critter {
         return conflicts;
     }
     
+	/**
+	 * Prints a string grid of the world to standard output.
+	 */
     public static void displayWorld() {
         String[][] grid = new String[Params.world_height][Params.world_width];
         
