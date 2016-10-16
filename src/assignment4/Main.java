@@ -1,13 +1,12 @@
-/* CRITTERS Main.java
+/* CRITTERS Critter.java
  * EE422C Project 4 submission by
- * Replace <...> with your actual data.
  * Shashank Kambhampati
  * skk834
  * 16445
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
- * Slip days used: <0>
+ * Pranav Harathi
+ * sh44674
+ * 16460
+ * Slip days used: 0
  * Fall 2016
  */
 package assignment4; // cannot be in default package
@@ -77,7 +76,8 @@ public class Main {
 
 
             String in = kb.nextLine();
-            String[] inputArgs = in.split("\\s");
+
+            String[] inputArgs = in.split("\\s+");
             boolean invalid = false;
 
             switch(inputArgs[0]){
@@ -164,8 +164,12 @@ public class Main {
                             java.util.List<Critter> statList = Critter.getInstances(inputArgs[1]);
 							
 							Class<?>[] params = {List.class};
+
 							
-                            statList.get(0).getClass().getMethod("runStats", params).invoke(null, statList);
+							Class<? extends Critter> stats = Class.forName(myPackage + "." + inputArgs[1])
+								.asSubclass(Critter.class);
+							
+                            stats.getMethod("runStats", params).invoke(null, statList);
                         } catch(Exception e){
                             invalid = true;
                         }
