@@ -98,11 +98,11 @@ public abstract class Critter {
         if(direction > 2 && direction < 6){
             x_coord -= distance;
 
-            x_coord = x_coord >= Params.world_width ? x_coord - Params.world_width : x_coord;
+            x_coord = x_coord < 0 ? x_coord + Params.world_width : x_coord;
         } else if(direction < 2 || direction > 6){
             x_coord += distance;
 
-            x_coord = x_coord < 0 ? x_coord + Params.world_width : x_coord;
+            x_coord = x_coord >= Params.world_width ? x_coord - Params.world_width : x_coord;
         }
         
         if(fighting && isTaken(x_coord, y_coord)){
@@ -335,19 +335,18 @@ public abstract class Critter {
 				
 				boolean Afight = critterA.fight(critterB.toString());
 				boolean Bfight = critterB.fight(critterA.toString());
+				boolean noFight = false;
 
 				if(critterA.energy <= 0){
 					population.remove(critterA);
-					critterA.x_coord = -1;
-					critterA.y_coord = -1;
+					noFight = true;
 				} 
 				if(critterB.energy <= 0){
 					population.remove(critterB);
-					critterB.x_coord = -2;
-					critterB.y_coord = -2;
+					noFight = true;
 				}
 				
-				if(critterA.x_coord == critterB.x_coord && critterA.y_coord == critterB.y_coord){
+				if(!noFight && critterA.x_coord == critterB.x_coord && critterA.y_coord == critterB.y_coord){
 
 					int AfightNum = Afight ? getRandomInt(critterA.energy) : 0;
 					int BfightNum = Bfight ? getRandomInt(critterB.energy) : 0;
