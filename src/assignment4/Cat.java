@@ -1,5 +1,4 @@
-/* CRITTERS Critter.java
- * EE422C Project 4 submission by
+/* EE422C Project 4 submission by
  * Shashank Kambhampati
  * skk834
  * 16445
@@ -79,9 +78,10 @@ public class Cat extends Critter{
         if(running){
             run(Critter.getRandomInt(8));
         } else {
-			// Critter checks if reproducing is allowed anyway
-            Cat child = new Cat();
-            reproduce(child, Critter.getRandomInt(8));
+			if(getEnergy() >= Params.min_reproduce_energy){
+				Cat child = new Cat();
+				reproduce(child, Critter.getRandomInt(8));
+			}
         }
 
         turnsAlive++;
