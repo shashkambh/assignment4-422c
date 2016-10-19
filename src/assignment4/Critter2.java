@@ -19,10 +19,9 @@ package assignment4;
  * for their cause.  After a few fights, however, they have to sit down and rest,
  * so they don't move for a few time steps.
  *
- * 'P' for parent, since Aliens are M
  */
 
-public class Mom extends Critter{
+public class Critter2 extends Critter{
 
     private boolean isTired;
     private int activeTurnsMax;
@@ -30,21 +29,21 @@ public class Mom extends Critter{
     private int numTurns;
     private int tiredTurns;
 
-    public Mom(){
+    public Critter2(){
         isTired = false;
         activeTurnsMax = Critter.getRandomInt(10) + 3; // at least 3 steps, moms are strong
         tiredTurnsMax = activeTurnsMax / 2;
     }
 
     public String toString(){
-        return "P";
+        return "2";
     }
 
     public boolean fight(String other){
         if(isTired) {
             return other.equals("C");
         }
-        return !other.equals("P");
+        return !other.equals("2");
     }
 
     public void doTimeStep(){
@@ -57,7 +56,7 @@ public class Mom extends Critter{
         } else {
             run(Critter.getRandomInt(8));
             if(getEnergy() >= Params.min_reproduce_energy * 2){
-                reproduce(new Alien(), 2);
+                reproduce(new Critter2(), 2);
             }
             numTurns++;
             if(numTurns > activeTurnsMax) {

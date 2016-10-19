@@ -20,7 +20,7 @@ package assignment4;
  * They also don't reproduce unless they have a lot of extra energy.
  */
 
-public class Alien extends Critter{
+public class Critter3 extends Critter{
 
     private static int numAbducted = 0;
     private static int totalSent = 0;
@@ -28,7 +28,7 @@ public class Alien extends Critter{
     private int patternStep = 0;
     private boolean abducting;
 
-    public Alien(){
+    public Critter3(){
         totalSent++;
         abducting = false;
         holdingPattern = Critter.getRandomInt(3);
@@ -36,7 +36,7 @@ public class Alien extends Critter{
     }
 
     public String toString(){
-        return "M";
+        return "3";
     }
 
     public boolean fight(String other){
@@ -45,7 +45,7 @@ public class Alien extends Critter{
             numAbducted++;
         }
 
-        if(!other.equals("M")){
+        if(!other.equals("3")){
             abducting = true;
             return true;
         } else {
@@ -85,7 +85,7 @@ public class Alien extends Critter{
         }
 
         if(getEnergy() >= Params.min_reproduce_energy * 2){
-            reproduce(new Alien(), 2);
+            reproduce(new Critter3(), 2);
         }
     }
 
@@ -97,7 +97,7 @@ public class Alien extends Critter{
         int pattern3 = 0;
 
         for(Critter e : aliens){
-            Alien alien = (Alien) e;
+            Critter3 alien = (Critter3) e;
             if(alien.holdingPattern == 0) pattern1++;
             else if(alien.holdingPattern == 1) pattern2++;
             else pattern3++;

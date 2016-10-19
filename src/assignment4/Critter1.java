@@ -19,7 +19,7 @@ import java.util.*;
  * won, the more aggressive it is.
  * It will also reproduce somewhat frequently and run around every other turn.
  */
-public class Cat extends Critter{
+public class Critter1 extends Critter{
 
     private static int numCats = 0;
     private int catId;
@@ -30,7 +30,7 @@ public class Cat extends Critter{
     /**
      * Sole constructor. Creates a new Cat
      */
-    public Cat(){
+    public Critter1(){
         catId = numCats;
         numCats++;
         numFights = 0;
@@ -43,7 +43,7 @@ public class Cat extends Critter{
      * @return A single letter representation of a Cat
      */
     public String toString(){
-        return "A";
+        return "1";
     }
 
     /**
@@ -79,7 +79,7 @@ public class Cat extends Critter{
             run(Critter.getRandomInt(8));
         } else {
 			if(getEnergy() >= Params.min_reproduce_energy){
-				Cat child = new Cat();
+				Critter1 child = new Critter1();
 				reproduce(child, Critter.getRandomInt(8));
 			}
         }
@@ -103,7 +103,7 @@ public class Cat extends Critter{
         
         
         for(Critter e : cats){
-            Cat cat = (Cat) e;
+            Critter1 cat = (Critter1) e;
 
             if(cat.numFights == 0){
                 numNoFights++;

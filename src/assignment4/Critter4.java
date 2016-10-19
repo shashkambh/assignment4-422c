@@ -16,14 +16,14 @@ package assignment4;
  * Poor guys, they never fight back.
  */
 
-public class Cow extends Critter {
+public class Critter4 extends Critter {
 
     private int patternSize;
     private int pathLength;
     private int pathCtr;
     private int direction;
 
-    public Cow(){
+    public Critter4(){
         patternSize = Critter.getRandomInt(6) + 3; // has to be at least three
         pathLength = (patternSize*patternSize) - ((patternSize - 2)*(patternSize - 2));
         direction = 0; // ->|<-| ...
@@ -31,7 +31,7 @@ public class Cow extends Critter {
     }
 
     public String toString(){
-        return "W";
+        return "4";
     }
 
     public boolean fight(String other){
@@ -42,19 +42,19 @@ public class Cow extends Critter {
         walk(direction);
         pathCtr++;
         if(pathCtr > pathLength) pathCtr = 0;
-        if((pathCtr \ patternSize) == 0) {
+        if((pathCtr / patternSize) == 0) {
             direction = 0;
-        } else if((pathCtr \ patternSize) == 1) {
+        } else if((pathCtr / patternSize) == 1) {
             direction = 6;
-        } else if((pathCtr \ patternSize) == 2) {
+        } else if((pathCtr / patternSize) == 2) {
             direction = 4;
-        } else if((pathCtr \ patternSize) == 3) {
+        } else if((pathCtr / patternSize) == 3) {
             direction = 2;
         }
     }
 
 
-    public static void runStats(java.util.List<Critter> moms){
+    public static void runStats(java.util.List<Critter> cows){
         
     }
 
