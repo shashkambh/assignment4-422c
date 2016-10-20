@@ -314,6 +314,7 @@ public abstract class Critter {
             if(toCheck.energy <= 0){
                 population.remove(i);
             }
+            toCheck.walked = false;
         }
 
         for(int i = 0; i < Params.refresh_algae_count; i++){

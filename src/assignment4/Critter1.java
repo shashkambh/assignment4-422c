@@ -12,7 +12,7 @@ package assignment4;
 
 import java.util.*;
 
-/*
+/**
  * This Cat is extremely capricious and decides almost everything based on the
  * random number generator. However, because Craig already uses the letter C, it
  * hates Craigs and will fight them at any opportunity. The more fights a Cat has
@@ -70,7 +70,7 @@ public class Critter1 extends Critter{
     }
 
     /**
-     * Preforms one timestep for the Cat.
+     * Performs one timestep for the Cat.
      */
     public void doTimeStep(){
         running = !running;
