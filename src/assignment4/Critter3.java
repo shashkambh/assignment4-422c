@@ -28,6 +28,9 @@ public class Critter3 extends Critter{
     private int patternStep = 0;
     private boolean abducting;
 
+	/**
+	 * Sole constructor. Creates a new Alien.
+	 */
     public Critter3(){
         totalSent++;
         abducting = false;
@@ -35,10 +38,19 @@ public class Critter3 extends Critter{
         patternStep = 0;
     }
 
+	/**
+	 * Returns a string representation of the Alien
+	 * @return a 1 character string representing the Alien
+	 */
     public String toString(){
         return "3";
     }
 
+	/**
+	 * Checks if this Alien will fight with another Critter
+	 * @param other A string representation of the Critter to evaluate
+	 * @return true if willing to fight, false otherwise
+	 */
     public boolean fight(String other){
         if(abducting){
             abducting = false;
@@ -54,6 +66,9 @@ public class Critter3 extends Critter{
         }
     }
 
+	/**
+	 * Performs one timestep for the Alien.
+	 */
     public void doTimeStep(){
         if(abducting){
             abducting = false;
@@ -88,7 +103,10 @@ public class Critter3 extends Critter{
             reproduce(new Critter3(), 2);
         }
     }
-
+	/**
+	 * Runs stats on the living Aliens.
+	 * @param aliens The list of aliens currently alive
+	 */
     public static void runStats(java.util.List<Critter> aliens){
         int dead = totalSent - aliens.size();
 
@@ -105,7 +123,7 @@ public class Critter3 extends Critter{
 
         System.out.println(totalSent + " have been sent to attain victory.");
         System.out.println(dead + " have died in service to our great lord Boros.");
-        System.out.println("Our warriors have procured specimens: " + numAbducted + " of them.");
+        if(numAbducted > 0) System.out.println("Our warriors have procured specimens: " + numAbducted + " of them.");
         System.out.println("Holding patterns: 1->" + pattern1 + " 2->" + pattern2 + " 3->" + pattern3);
     }
     
