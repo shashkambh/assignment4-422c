@@ -81,33 +81,33 @@ public abstract class Critter {
     }
 
     private void go(int direction, int distance){
-        int oldy = y_coord;
-        int oldx = x_coord;
+        int newy = y_coord;
+        int newx = x_coord;
     	
     	if(direction > 4){
-            y_coord += distance;
+            newy += distance;
 
-            y_coord = y_coord >= Params.world_height ? y_coord - Params.world_height : y_coord;
+            newy = newy >= Params.world_height ? newy - Params.world_height : newy;
             
         } else if(direction > 0 && direction < 4){
-            y_coord -= distance;
+            newy -= distance;
 
-            y_coord = y_coord < 0 ? y_coord + Params.world_height : y_coord;
+            newy = newy < 0 ? newy + Params.world_height : newy;
         }
 
         if(direction > 2 && direction < 6){
-            x_coord -= distance;
+            newx -= distance;
 
-            x_coord = x_coord < 0 ? x_coord + Params.world_width : x_coord;
+            newx = newx < 0 ? newx + Params.world_width : newx;
         } else if(direction < 2 || direction > 6){
-            x_coord += distance;
+            newx += distance;
 
-            x_coord = x_coord >= Params.world_width ? x_coord - Params.world_width : x_coord;
+            newx = newx >= Params.world_width ? newx - Params.world_width : newx;
         }
         
-        if(fighting && isTaken(x_coord, y_coord)){
-        	x_coord = oldx;
-        	y_coord = oldy;
+        if(!fighting || !isTaken(x_coord, newy)){
+        	x_coord = newx;
+        	y_coord = newy;
         }
 
     }
