@@ -10,7 +10,10 @@
  */
 package assignment4;
 
-/*
+
+import java.util.ArrayList;
+
+/**
  * With all the chaos in the Critter world lately, everyone and their mother is
  * getting worried.  Especially the moms.  In fact, the mothers are so worried that
  * they will fight any other Critter they come across (except other mothers),
@@ -20,9 +23,6 @@ package assignment4;
  * so they don't move for a few time steps.
  *
  */
-
-import java.util.ArrayList;
-
 public class Critter2 extends Critter{
 
     private static int numMoms = 0;

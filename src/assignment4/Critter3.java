@@ -10,7 +10,7 @@
  */
 package assignment4;
 
-/*
+/**
  * Aliens have invaded the world of Critters. They want to abduct and study Earthlings
  * to prepare for their invasion. There are a lot of them on their spaceship (you
  * can add any number you'd like to the board after all) and all of them except the
@@ -19,7 +19,6 @@ package assignment4;
  * else and try to keep holding patterns to search in.
  * They also don't reproduce unless they have a lot of extra energy.
  */
-
 public class Critter3 extends Critter{
 
     private static int numAbducted = 0;

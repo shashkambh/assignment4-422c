@@ -62,6 +62,11 @@ public abstract class Critter {
     private int y_coord;
     
     private boolean walked;
+
+    /**
+     * Calls go with a value of 1 in a specified direction and subtracts energy cost
+     * @param direction direction given
+     */
     protected final void walk(int direction) {
         if(!walked){
             walked = true;
@@ -70,7 +75,11 @@ public abstract class Critter {
 
         energy -= Params.walk_energy_cost;
     }
-    
+
+    /**
+     * Calls go with a value of 2 in a specified direction and subtracts energy cost
+     * @param direction direction given
+     */
     protected final void run(int direction) {
         if(!walked){
             walked = true;
@@ -80,6 +89,11 @@ public abstract class Critter {
         energy -= Params.run_energy_cost;
     }
 
+    /**
+     * Moves Critter in given direction a given distance, wrapping the map on all four sides.
+     * @param direction given direction
+     * @param distance given distance to go
+     */
     private void go(int direction, int distance){
         int oldy = y_coord;
         int oldx = x_coord;
@@ -111,7 +125,13 @@ public abstract class Critter {
         }
 
     }
-    
+
+    /**
+     * Checks if position is occupied.
+     * @param x x coordinate to check
+     * @param y y coordinate to check
+     * @return true if taken, false, otherwise
+     */
     private static boolean isTaken(int x, int y){
     	for(Critter e : population){
     		if(e.x_coord == x && e.y_coord == y){
@@ -327,6 +347,10 @@ public abstract class Critter {
 		babies.clear();
     }
 
+    /**
+     * Given a list of Critter pairs, runs their fight methods
+     * @param conflicts list of pairs of Critters on the same position
+     */
     private static void resolveConflicts(ArrayList<List<Critter>> conflicts) {
         for(List<Critter> conflict : conflicts) {
             Critter critterA = conflict.get(0);

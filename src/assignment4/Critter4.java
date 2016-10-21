@@ -10,14 +10,13 @@
  */
 package assignment4;
 
-/*
- * Cows are peaceful grazing animals that like to follow a pattern.
- * They simply feed off of Algae and move in a nice box pattern. 
- * Poor guys, they never fight back.
- */
-
 import java.util.TreeSet;
 
+/**
+ * Cows are peaceful grazing animals that like to follow a pattern.
+ * They simply feed off of Algae and move in a nice box pattern.
+ * Poor guys, they never fight back.
+ */
 public class Critter4 extends Critter {
 
     private static int numCows;
